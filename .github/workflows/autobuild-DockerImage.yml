@@ -25,6 +25,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+        if: steps.check.outputs.needs-updating == 'true'
       -
         name: Build and push
         uses: docker/build-push-action@v2

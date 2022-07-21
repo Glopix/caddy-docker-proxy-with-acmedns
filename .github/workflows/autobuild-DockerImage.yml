@@ -3,6 +3,7 @@ name: check docker images
 on:
   schedule:
     - cron:  '0 4 * * *'
+  workflow_dispatch:
 
 jobs:
   docker:

@@ -20,4 +20,4 @@ jobs:
           context: .
           push: true
           tags: glopix/caddy-docker-proxy-with-acmedns:latest
-        if: steps.check.outputs.needs-updating == 'true'
+

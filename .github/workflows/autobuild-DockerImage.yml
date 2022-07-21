@@ -12,13 +12,7 @@ jobs:
       -
         name: Checkout
         uses: actions/checkout@v2
-      -
-        name: Check if update available
-        id: check
-        uses: lucacome/docker-image-update-checker@v1
-        with:
-          base-image: library/caddy:alpine
-          image: glopix/caddy-docker-proxy-with-acmedns
+
       -
         name: Build and push
         uses: docker/build-push-action@v2

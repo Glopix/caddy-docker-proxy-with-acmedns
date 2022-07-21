@@ -17,7 +17,7 @@ jobs:
         id: check
         uses: lucacome/docker-image-update-checker@v1
         with:
-          base-image: caddy:alpine
+          base-image: library/caddy:alpine
           image: glopix/caddy-docker-proxy-with-acmedns
       -
         name: Build and push

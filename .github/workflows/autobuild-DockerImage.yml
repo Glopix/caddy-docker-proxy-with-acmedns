@@ -1,4 +1,5 @@
-name: check if Base-Image library/caddy:alpine has been updated, if so do rebuild
+name: Autoupdate build on base-image change (caddy)
+# check if Base-Image library/caddy:alpine has been updated, if so do rebuild
 
 on:
   schedule:
@@ -20,6 +21,8 @@ jobs:
           base-image: library/caddy:alpine
           image: glopix/caddy-docker-proxy-with-acmedns
 
+# if condition for the following actions: only excecute if the base-image has been updated
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
         with:
@@ -27,6 +30,7 @@ jobs:
           platforms: arm64,arm
         if: steps.check.outputs.needs-updating == 'true'
           
+      # for multi architecture builds (x64, arm64, arm)
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
         if: steps.check.outputs.needs-updating == 'true'

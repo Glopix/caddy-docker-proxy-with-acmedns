@@ -2,7 +2,7 @@ name: check if Base-Image library/caddy:alpine has been updated, if so do rebuil
 
 on:
   schedule:
-    - cron:  '0 4 * * *'
+    - cron:  '42 21 * * */2'
   workflow_dispatch:
 
 jobs:

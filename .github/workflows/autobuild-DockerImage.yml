@@ -51,3 +51,9 @@ jobs:
           push: true
           tags: glopix/caddy-docker-proxy-with-acmedns:latest
         if: steps.check.outputs.needs-updating == 'true'
+        
+      - name: Docker Hub Description
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}

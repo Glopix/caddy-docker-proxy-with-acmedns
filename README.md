@@ -4,9 +4,9 @@
 ## Usage
 For further information and more detailed instructions on the use of this container/caddy-module, please refer to the https://github.com/lucaslorentz/caddy-docker-proxy
 
-##Docker Compose:  
+## Docker Compose:  
 docker-compose.yml
-'''
+```
 version: "3.8"
 
 services:
@@ -37,4 +37,4 @@ networks:
 # persistant storage for certs etc.
 volumes:
   caddy_data:
-'''
+```

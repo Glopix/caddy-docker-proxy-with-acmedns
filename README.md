@@ -1,4 +1,4 @@
-# caddy-docker-proxy_with-acmedns
+# caddy-docker-proxy-with-acmedns
 [lucaslorentz/caddy-docker-proxy](https://github.com/lucaslorentz/caddy-docker-proxy) with the Caddy [DNS Module for acmedns](https://github.com/caddy-dns/acmedns)
 
 ## Usage

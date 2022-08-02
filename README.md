@@ -1,6 +1,9 @@
 # caddy-docker-proxy-with-acmedns
 [lucaslorentz/caddy-docker-proxy](https://github.com/lucaslorentz/caddy-docker-proxy) with the Caddy [DNS Module for acmedns](https://github.com/caddy-dns/acmedns)
 
+## Github Repository / Dockerfile
+https://github.com/Glopix/caddy-docker-proxy-with-acmedns
+
 ## Usage
 For further information and more detailed instructions on the use of this container/caddy-module, please refer to the https://github.com/lucaslorentz/caddy-docker-proxy and https://github.com/caddy-dns/acmedns on how to use the DNS module
 

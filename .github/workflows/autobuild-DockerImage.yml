@@ -13,10 +13,7 @@ jobs:
     outputs:
       needs-updating: ${{ steps.check.outputs.needs-updating }}
     steps:
-    
-      - name: Checkout
-        uses: actions/checkout@v2
-        
+            
       - name: Check if update available
         id: check
         uses: lucacome/docker-image-update-checker@v1
@@ -30,6 +27,9 @@ jobs:
     if: needs.check.outputs.needs-updating == 'true'
     runs-on: ubuntu-latest
     steps:
+    
+      - name: Checkout
+        uses: actions/checkout@v3
 
       # for multi architecture builds (x64, arm64, arm)
       - name: Set up QEMU

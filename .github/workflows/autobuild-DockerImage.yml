@@ -7,8 +7,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  docker:
+  check:
+    name: check for new release of caddy
     runs-on: ubuntu-latest
+    outputs:
+      needs-updating: ${{ steps.check.outputs.needs-updating }}
     steps:
     
       - name: Checkout
@@ -20,8 +23,13 @@ jobs:
         with:
           base-image: library/caddy:alpine
           image: glopix/caddy-docker-proxy-with-acmedns
-
-# if condition for the following actions: only excecute if the base-image has been updated
+          
+  build:
+    name: build new docker image
+    needs: check
+    if: needs.check.outputs.needs-updating == 'true'
+    runs-on: ubuntu-latest
+    steps:
 
       # for multi architecture builds (x64, arm64, arm)
       - name: Set up QEMU
@@ -29,11 +37,9 @@ jobs:
         with:
           image: tonistiigi/binfmt:latest
           platforms: arm64,arm
-        if: steps.check.outputs.needs-updating == 'true'
           
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
-        if: steps.check.outputs.needs-updating == 'true'
         
         
       - name: Login to DockerHub
@@ -41,7 +47,6 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-        if: steps.check.outputs.needs-updating == 'true'
         
       - name: Build and push
         uses: docker/build-push-action@v2
@@ -50,10 +55,10 @@ jobs:
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
           tags: glopix/caddy-docker-proxy-with-acmedns:latest
-        if: steps.check.outputs.needs-updating == 'true'
         
       - name: Docker Hub Description
         uses: peter-evans/dockerhub-description@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+          

@@ -5,7 +5,7 @@
 https://github.com/Glopix/caddy-docker-proxy-with-acmedns
 
 ## Usage
-For further information and more detailed instructions on the use of this container/caddy-module, please refer to the https://github.com/lucaslorentz/caddy-docker-proxy and https://github.com/caddy-dns/acmedns on how to use the DNS module
+For further information and more detailed instructions on the use of this container/caddy-module, please refer to https://github.com/lucaslorentz/caddy-docker-proxy and https://github.com/caddy-dns/acmedns on how to use the DNS module.
 
 ## Docker Compose Example (excluding backend/reverse proxy target)
 docker-compose.yml

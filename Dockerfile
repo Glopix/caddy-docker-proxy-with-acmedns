@@ -1,6 +1,6 @@
 FROM caddy:builder AS builder
 RUN xcaddy build \
---with github.com/lucaslorentz/caddy-docker-proxy/plugin/v2 \
+--with github.com/lucaslorentz/caddy-docker-proxy/plugin/v2.8.3 \
 --with github.com/caddy-dns/acmedns
 
 FROM caddy:latest

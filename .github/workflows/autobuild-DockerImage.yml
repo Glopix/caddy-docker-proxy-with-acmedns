@@ -75,6 +75,7 @@ jobs:
         uses: peter-evans/dockerhub-description@v5
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
 
   save-build-info:
@@ -107,5 +108,4 @@ jobs:
           commit_user_email: github-actions-bot@none.dom
           commit_author: GitHub Actions Bot <github-actions-bot@none.dom>
           create_branch: true
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-          
+         

@@ -1,5 +1,5 @@
-name: Autoupdate build on base-image change (caddy)
-# check if Base-Image library/caddy:alpine has been updated, if so do rebuild
+name: Build images on caddy update
+# check if Base-Image library/caddy:alpine has been updated, and if so, do a rebuild
 
 on:
   schedule:
@@ -26,14 +26,16 @@ jobs:
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}      
+          password: ${{ secrets.DOCKERHUB_TOKEN }} 
+
       - name: Check if update available
         id: check
-        uses: lucacome/docker-image-update-checker@v1
+        uses: lucacome/docker-image-update-checker@v3
         with:
           base-image: library/caddy:alpine
           image: glopix/caddy-docker-proxy-with-acmedns
-          
+
+
   build:
     name: build new docker image
     needs: check
@@ -41,7 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       # for multi architecture builds (x64, arm64, arm, ...)
       - name: Set up QEMU
@@ -66,10 +68,44 @@ jobs:
           platforms: linux/amd64, linux/arm/v6, linux/arm/v7, linux/arm64/v8, linux/ppc64le, linux/s390x
           push: true
           tags: glopix/caddy-docker-proxy-with-acmedns:latest
+          cache-from: type=registry,ref=glopix/caddy-docker-proxy-with-acmedns:latest
+          cache-to: type=inline
         
       - name: Docker Hub Description
-        uses: peter-evans/dockerhub-description@v4
+        uses: peter-evans/dockerhub-description@v5
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
+
+
+  save-build-info:
+    name: save build info
+    needs: [check, build]
+    runs-on: ubuntu-latest
+    if: needs.build.result == 'success' && needs.build.result != 'skipped'
+    permissions:
+      # Give the default GITHUB_TOKEN write permission to commit and push the
+      # added or changed files to the repository.
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          repository: ${{ github.repository }}
+          ref: gh-workflows
+
+      - name: save last image build date and release date to files
+        run: |
+            TODAY=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+            echo "$TODAY" > ./gh-workflow_image-build-date.txt
+
+      - name: Commit updated release data
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          branch: gh-workflows
+          file_pattern: 'gh-workflow_*.txt'
+          commit_message: "Update stored release info"
+          commit_user_name: GitHub Actions Bot
+          commit_user_email: github-actions-bot@none.dom
+          commit_author: GitHub Actions Bot <github-actions-bot@none.dom>
+          create_branch: true
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           

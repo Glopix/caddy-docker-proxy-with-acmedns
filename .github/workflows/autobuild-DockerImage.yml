@@ -40,7 +40,7 @@ jobs:
       - name: Read previously saved image build date
         id: saved
         run: |
-          if [ -f "./gh-workflow_build-date.txt" ]; then
+          if [ -f "./gh-workflow_image-build-date.txt" ]; then
             SAVED_BUILD_DATE=$(cat ./gh-workflow_image-build-date.txt)
           else
             SAVED_BUILD_DATE="none"

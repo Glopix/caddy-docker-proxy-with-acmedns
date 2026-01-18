@@ -21,6 +21,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       needs-updating: ${{ steps.check.outputs.needs-updating }}
+      saved-build-date: ${{ steps.saved.outputs.saved-build-date }}
+      days-since-last-build: ${{ steps.days-since-build.outputs.days-since-last-build }}
     steps:
       - name: Login to Docker Registry
         uses: docker/login-action@v3
@@ -35,11 +37,30 @@ jobs:
           base-image: library/caddy:alpine
           image: glopix/caddy-docker-proxy-with-acmedns
 
+      - name: Read previously saved image build date
+        id: saved
+        run: |
+          if [ -f "./gh-workflow_build-date.txt" ]; then
+            SAVED_BUILD_DATE=$(cat ./gh-workflow_image-build-date.txt)
+          else
+            SAVED_BUILD_DATE="none"
+          fi
+          echo "saved-build-date=$SAVED_BUILD_DATE" >> "$GITHUB_OUTPUT"
+          echo "SAVED_BUILD_DATE=$SAVED_BUILD_DATE" >> "$GITHUB_ENV"
+           
+      - id: days-since-build
+        name: get number of days since last image build
+        run: |
+          DAYS_SINCE_LAST_BUILD_DATE=$(( ( $(date +%s) - $(date -d "$SAVED_BUILD_DATE" +%s) )/(60*60*24) ))
+          echo "days-since-last-build=$DAYS_SINCE_LAST_BUILD_DATE" >> "$GITHUB_OUTPUT"
 
   build:
     name: build new docker image
     needs: check
-    if: needs.check.outputs.needs-updating == 'true' || github.event.inputs.force_build == 'yes'
+    if: |
+      needs.check.outputs.needs-updating == 'true' || 
+      needs.check.outputs.days-since-last-build > 50 || 
+      github.event.inputs.force_build == 'yes'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -107,5 +128,6 @@ jobs:
           commit_user_name: GitHub Actions Bot
           commit_user_email: github-actions-bot@none.dom
           commit_author: GitHub Actions Bot <github-actions-bot@none.dom>
+
           create_branch: true
          
